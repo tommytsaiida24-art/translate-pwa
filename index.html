@@ -768,8 +768,8 @@
 </div>
 
 <script>
-  // ── Tesseract.js OCR Setup ───────────────────────────────────────
-  let tesseractWorker = null;
+  // ── Paddle.js OCR Setup ──────────────────────────────────────────
+  let paddleOCR = null;
   let ocrReady = false;
 
   async function initOCR() {
@@ -779,21 +779,9 @@
     statusText.textContent = 'OCR 載入中...';
 
     try {
-      const Tesseract = await import('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
-
-      tesseractWorker = await Tesseract.createWorker('eng+chi_tra+chi_sim', 1, {
-        logger: (m) => {
-          if (m.status === 'recognizing text') {
-            const pct = Math.round(m.progress * 100);
-            setOCRProgress(pct, `辨識中... ${pct}%`);
-          } else if (m.status === 'loading language traineddata') {
-            setOCRProgress(0, `載入語言模型... ${m.progress ? Math.round(m.progress * 100) : 0}%`);
-          } else {
-            setOCRProgress(0, m.status || '初始化...');
-          }
-        }
-      });
-
+      const { ocr } = await import('https://cdn.jsdelivr.net/npm/@paddlejs-models/ocr@1.2.4/lib/index.js');
+      await ocr.init();
+      paddleOCR = ocr;
       ocrReady = true;
       dot.className = 'dot ready';
       statusText.textContent = 'OCR 就緒';
@@ -1077,8 +1065,10 @@
     outputText.value = '';
 
     try {
-      const result = await tesseractWorker.recognize(file);
-      const text = result.data.text.trim();
+      setOCRProgress(30, '偵測文字區域...');
+      const result = await paddleOCR.recognize(file);
+      const texts = result.data.filter(r => r.text).map(r => r.text.trim());
+      const text = texts.join(' ').trim();
 
       if (!text) {
         ocrResultText.innerHTML = '<strong>找不到文字</strong>，請嘗試其他圖片';

@@ -3,9 +3,9 @@
 ## v1.5（圖片翻譯版）
 
 ### 新功能：圖片文字翻譯
-- 使用 **Tesseract.js**（純前端 OCR，圖片不離開瀏覽器）
+- 使用 **Paddle.js OCR**（百度開源 OCR，純前端，圖片不離開瀏覽器）
 - 支援從圖片萃取文字後翻譯
-- 流程：上傳圖片 → Tesseract.js 辨識 → MyMemory 翻譯 → 顯示譯文
+- 流程：上傳圖片 → Paddle.js 辨識 → MyMemory 翻譯 → 顯示譯文
 
 ---
 
