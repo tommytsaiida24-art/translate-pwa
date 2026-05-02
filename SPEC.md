@@ -1,6 +1,15 @@
 # Translate PWA — 規格書
 
-## 1. Concept & Vision
+## v1.5（圖片翻譯版）
+
+### 新功能：圖片文字翻譯
+- 使用 **Tesseract.js**（純前端 OCR，圖片不離開瀏覽器）
+- 支援從圖片萃取文字後翻譯
+- 流程：上傳圖片 → Tesseract.js 辨識 → MyMemory 翻譯 → 顯示譯文
+
+---
+
+## v1.0
 
 一個優雅、專業的即時翻譯工具。上下雙欄設計：上方自由輸入，下方即時呈現譯文。介面乾淨有質感，讓翻譯這件事看起來很從容。
 
@@ -159,5 +168,11 @@
 - Service Worker：快取離線可用（可選，等網站完成後加）
 
 ### 部署
-- Vercel CLI：`vercel --prod`
-- 專案名稱：`translate-pwa`
+- Vercel CLI：`vercel --prod --token <token> --yes`
+- Vercel project ID：`tommytsaiida24-5759s-projects/translate-pwa`
+- GitHub repo：`https://github.com/tommytsaiida24-art/translate-pwa`
+- 自動部署：push 到 main 分支後 Vercel 自動部署
+
+### 版本控制
+- 網頁版號顯示在底部（`由 MyMemory 提供翻譯引擎 · v1.0`）
+- `git tag vX.Y` → `git push origin vX.Y` 即可自動更新版號（workflow 自動推送 index.html 更新）
