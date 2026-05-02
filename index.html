@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Translate PWA — 即時多語言翻譯</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --primary: #4F46E5;
+      --primary-dark: #4338CA;
+      --secondary: #7C3AED;
+      --text: #1e293b;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --success: #10B981;
+      --success-bg: #f0fdf4;
+      --error: #EF4444;
+      --radius: 16px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-hover: 0 8px 32px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      padding-bottom: 8px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    header h1 .icon {
+      font-size: 1.6rem;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    header .divider {
+      margin-top: 20px;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), #F59E0B);
+      opacity: 0.7;
+    }
+
+    /* ── Language Selector Row ── */
+    .lang-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .lang-selector {
+      flex: 1;
+      position: relative;
+    }
+
+    .lang-selector label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .lang-select {
+      width: 100%;
+      padding: 10px 36px 10px 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      font-weight: 500;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .lang-select:hover {
+      border-color: #c7d2fe;
+    }
+
+    .lang-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+    }
+
+    .lang-selector::after {
+      content: '▼';
+      position: absolute;
+      right: 12px;
+      bottom: 14px;
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+
+    .swap-btn {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.15s;
+      margin-top: 18px;
+    }
+
+    .swap-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      transform: rotate(180deg);
+    }
+
+    .swap-btn:active {
+      transform: rotate(180deg) scale(0.93);
+    }
+
+    /* ── Text Panel ── */
+    .text-panel {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .text-panel:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    .text-panel.input-panel {
+      border-top: 3px solid var(--primary);
+    }
+
+    .text-panel.output-panel {
+      border-top: 3px solid var(--success);
+      background: var(--success-bg);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px 0;
+    }
+
+    .panel-lang-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .char-count {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 12px 20px;
+      font-family: inherit;
+      font-size: 1rem;
+      line-height: 1.7;
+      border: none;
+      resize: vertical;
+      background: transparent;
+      color: var(--text);
+    }
+
+    textarea:focus {
+      outline: none;
+    }
+
+    textarea::placeholder {
+      color: #a0aec0;
+    }
+
+    textarea[readonly] {
+      cursor: default;
+    }
+
+    .panel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 8px 16px 14px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .btn-ghost.copied {
+      color: var(--success);
+      border-color: var(--success);
+    }
+
+    .btn-icon {
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    /* ── Loading Spinner ── */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Fade-in Animation ── */
+    .fade-in {
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Error Message ── */
+    .error-msg {
+      text-align: center;
+      color: var(--error);
+      font-size: 0.85rem;
+      padding: 8px;
+      background: #fef2f2;
+      border-radius: 8px;
+      margin: 0 20px 12px;
+      display: none;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    /* ── Powered by ── */
+    .powered {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 520px) {
+      .lang-row {
+        flex-wrap: wrap;
+      }
+      .lang-selector {
+        flex: 1 1 45%;
+      }
+      .swap-btn {
+        margin: 0 auto;
+        margin-top: 4px;
+        order: 3;
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <h1><span class="icon">🌐</span> Translate PWA</h1>
+    <p>即時多語言翻譯</p>
+    <div class="divider"></div>
+  </header>
+
+  <!-- Language Selector Row -->
+  <div class="lang-row">
+    <div class="lang-selector">
+      <label>原始語言</label>
+      <select id="sourceLang" class="lang-select">
+        <option value="zh-TW">🇹🇼 繁體中文</option>
+        <option value="zh-CN">🇨🇳 简体中文</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="en" selected>🇺🇸 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="th">🇹🇭 ภาษาไทย</option>
+        <option value="vi">🇻🇳 Tiếng Việt</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="ar">🇸🇦 العربية</option>
+        <option value="hi">🇮🇳 हिन्दी</option>
+        <option value="id">🇮🇩 Bahasa</option>
+        <option value="ms">🇲🇾 Melayu</option>
+        <option value="tr">🇹🇷 Türkçe</option>
+        <option value="pl">🇵🇱 Polski</option>
+        <option value="nl">🇳🇱 Nederlands</option>
+      </select>
+    </div>
+
+    <button class="swap-btn" id="swapBtn" title="交換語言">⇄</button>
+
+    <div class="lang-selector">
+      <label>目標語言</label>
+      <select id="targetLang" class="lang-select">
+        <option value="zh-TW" selected>🇹🇼 繁體中文</option>
+        <option value="zh-CN">🇨🇳 简体中文</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="th">🇹🇭 ภาษาไทย</option>
+        <option value="vi">🇻🇳 Tiếng Việt</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="ar">🇸🇦 العربية</option>
+        <option value="hi">🇮🇳 हिन्दी</option>
+        <option value="id">🇮🇩 Bahasa</option>
+        <option value="ms">🇲🇾 Melayu</option>
+        <option value="tr">🇹🇷 Türkçe</option>
+        <option value="pl">🇵🇱 Polski</option>
+        <option value="nl">🇳🇱 Nederlands</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Input Panel -->
+  <div class="text-panel input-panel">
+    <div class="panel-header">
+      <span class="panel-lang-tag" id="sourceTag">🇺🇸 English</span>
+      <span class="char-count" id="charCount">0 字</span>
+    </div>
+    <textarea
+      id="inputText"
+      placeholder="輸入文字翻譯...（Ctrl + Enter 翻譯）"
+      spellcheck="false"
+    ></textarea>
+    <div class="panel-footer">
+      <button class="btn btn-ghost btn-icon" id="clearBtn" title="清除">✕</button>
+      <button class="btn btn-primary" id="translateBtn">
+        <span class="btn-text">翻譯</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- Output Panel -->
+  <div class="text-panel output-panel">
+    <div class="panel-header">
+      <span class="panel-lang-tag" id="targetTag">🇹🇼 繁體中文</span>
+    </div>
+    <textarea id="outputText" readonly placeholder="譯文將在此顯示..." spellcheck="false"></textarea>
+    <div class="panel-footer">
+      <button class="btn btn-ghost" id="copyBtn">
+        <span class="btn-text">📋 複製</span>
+      </button>
+      <button class="btn btn-ghost" id="speakBtn">
+        <span class="btn-text">🔊 朗讀</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="powered">由 MyMemory 提供翻譯引擎</div>
+
+</div>
+
+<script>
+  // ── DOM Elements ──────────────────────────────────────────────
+  const sourceSelect  = document.getElementById('sourceLang');
+  const targetSelect  = document.getElementById('targetLang');
+  const sourceTag     = document.getElementById('sourceTag');
+  const targetTag     = document.getElementById('targetTag');
+  const inputText     = document.getElementById('inputText');
+  const outputText    = document.getElementById('outputText');
+  const translateBtn  = document.getElementById('translateBtn');
+  const swapBtn       = document.getElementById('swapBtn');
+  const copyBtn       = document.getElementById('copyBtn');
+  const speakBtn      = document.getElementById('speakBtn');
+  const clearBtn      = document.getElementById('clearBtn');
+  const charCount     = document.getElementById('charCount');
+  const errorMsg      = document.getElementById('errorMsg');
+
+  // ── Language labels (native) ──────────────────────────────────
+  const langLabels = {
+    'zh-TW': '🇹🇼 繁體中文',
+    'zh-CN': '🇨🇳 简体中文',
+    'ja':    '🇯🇵 日本語',
+    'ko':    '🇰🇷 한국어',
+    'en':    '🇺🇸 English',
+    'es':    '🇪🇸 Español',
+    'fr':    '🇫🇷 Français',
+    'de':    '🇩🇪 Deutsch',
+    'it':    '🇮🇹 Italiano',
+    'pt':    '🇵🇹 Português',
+    'th':    '🇹🇭 ภาษาไทย',
+    'vi':    '🇻🇳 Tiếng Việt',
+    'ru':    '🇷🇺 Русский',
+    'ar':    '🇸🇦 العربية',
+    'hi':    '🇮🇳 हिन्दी',
+    'id':    '🇮🇩 Bahasa',
+    'ms':    '🇲🇾 Melayu',
+    'tr':    '🇹🇷 Türkçe',
+    'pl':    '🇵🇱 Polski',
+    'nl':    '🇳🇱 Nederlands',
+  };
+
+  // ── Language codes for MyMemory / Web Speech API ───────────────
+  const speechLangs = {
+    'zh-TW': 'zh-TW', 'zh-CN': 'zh-CN', 'ja': 'ja-JP',
+    'ko': 'ko-KR', 'en': 'en-US', 'es': 'es-ES',
+    'fr': 'fr-FR', 'de': 'de-DE', 'it': 'it-IT',
+    'pt': 'pt-PT', 'th': 'th-TH', 'vi': 'vi-VN',
+    'ru': 'ru-RU', 'ar': 'ar-SA', 'hi': 'hi-IN',
+    'id': 'id-ID', 'ms': 'ms-MY', 'tr': 'tr-TR',
+    'pl': 'pl-PL', 'nl': 'nl-NL',
+  };
+
+  // ── Update language tags ──────────────────────────────────────
+  function updateTags() {
+    sourceTag.textContent = langLabels[sourceSelect.value] || sourceSelect.value;
+    targetTag.textContent = langLabels[targetSelect.value] || targetSelect.value;
+  }
+
+  sourceSelect.addEventListener('change', updateTags);
+  targetSelect.addEventListener('change', updateTags);
+
+  // ── Char count ─────────────────────────────────────────────────
+  inputText.addEventListener('input', () => {
+    const len = inputText.value.length;
+    charCount.textContent = `${len} ${len === 1 ? '字' : '字'}`;
+    // Auto-translate on typing (debounced)
+    clearTimeout(window._debounce);
+    if (inputText.value.trim()) {
+      window._debounce = setTimeout(() => translate(), 1200);
+    }
+  });
+
+  // ── Translate ─────────────────────────────────────────────────
+  async function translate() {
+    const text = inputText.value.trim();
+    if (!text) return;
+
+    const source = sourceSelect.value;
+    const target = targetSelect.value;
+
+    setLoading(true);
+    errorMsg.classList.remove('show');
+
+    try {
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${source}|${target}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();
+
+      if (data.responseStatus !== 200) {
+        throw new Error(data.responseDetails || '翻譯失敗');
+      }
+
+      const translated = data.responseData.translatedText;
+      outputText.value = translated;
+      outputText.classList.remove('fade-in');
+      void outputText.offsetWidth; // reflow
+      outputText.classList.add('fade-in');
+
+    } catch (err) {
+      errorMsg.textContent = `翻譯失敗：${err.message}`;
+      errorMsg.classList.add('show');
+      outputText.value = '';
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function setLoading(loading) {
+    translateBtn.disabled = loading;
+    const btnText = translateBtn.querySelector('.btn-text');
+    if (loading) {
+      translateBtn.innerHTML = '<span class="spinner"></span> 翻譯中...';
+    } else {
+      translateBtn.innerHTML = '<span class="btn-text">翻譯</span>';
+    }
+  }
+
+  translateBtn.addEventListener('click', translate);
+
+  // ── Ctrl+Enter ─────────────────────────────────────────────────
+  inputText.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+      e.preventDefault();
+      translate();
+    }
+  });
+
+  // ── Swap languages ─────────────────────────────────────────────
+  swapBtn.addEventListener('click', () => {
+    const srcVal = sourceSelect.value;
+    const tgtVal = targetSelect.value;
+
+    // Swap selects
+    sourceSelect.value = tgtVal;
+    targetSelect.value = srcVal;
+    updateTags();
+
+    // Swap content
+    const tmp = inputText.value;
+    inputText.value = outputText.value;
+    outputText.value = tmp;
+
+    // Re-count
+    const len = inputText.value.length;
+    charCount.textContent = `${len} 字`;
+
+    // Re-translate if there's content
+    if (inputText.value.trim()) {
+      translate();
+    }
+  });
+
+  // ── Copy ───────────────────────────────────────────────────────
+  copyBtn.addEventListener('click', async () => {
+    const text = outputText.value;
+    if (!text) return;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      const btnText = copyBtn.querySelector('.btn-text');
+      btnText.textContent = '✓ 已複製';
+      copyBtn.classList.add('copied');
+      setTimeout(() => {
+        btnText.textContent = '📋 複製';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    } catch {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+  });
+
+  // ── Speak (Web Speech API) ─────────────────────────────────────
+  speakBtn.addEventListener('click', () => {
+    const text = outputText.value;
+    if (!text) return;
+
+    // Cancel any ongoing speech
+    speechSynthesis.cancel();
+
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = speechLangs[targetSelect.value] || 'zh-TW';
+    utt.rate = 0.95;
+    utt.pitch = 1;
+    speechSynthesis.speak(utt);
+  });
+
+  // ── Clear ──────────────────────────────────────────────────────
+  clearBtn.addEventListener('click', () => {
+    inputText.value = '';
+    outputText.value = '';
+    charCount.textContent = '0 字';
+    errorMsg.classList.remove('show');
+    inputText.focus();
+  });
+
+  // ── Init ──────────────────────────────────────────────────────
+  updateTags();
+</script>
+
+</body>
+</html>
