@@ -779,9 +779,21 @@
     statusText.textContent = 'OCR 載入中...';
 
     try {
-      // Paddle.js OCR requires core + webgl backend to be loaded first
-      await import('https://cdn.jsdelivr.net/npm/@paddlejs/paddlejs-core@2.1.17/lib/index.js');
-      await import('https://cdn.jsdelivr.net/npm/@paddlejs/paddlejs-backend-webgl@1.1.19/lib/index.js');
+      // Load Paddle.js dependencies via <script> tags (import() loses `this` context in module scope)
+      await new Promise((resolve, reject) => {
+        const s1 = document.createElement('script');
+        s1.src = 'https://cdn.jsdelivr.net/npm/@paddlejs/paddlejs-core@2.1.17/lib/index.js';
+        s1.onload = () => {
+          const s2 = document.createElement('script');
+          s2.src = 'https://cdn.jsdelivr.net/npm/@paddlejs/paddlejs-backend-webgl@1.1.19/lib/index.js';
+          s2.onload = resolve;
+          s2.onerror = reject;
+          document.head.appendChild(s2);
+        };
+        s1.onerror = reject;
+        document.head.appendChild(s1);
+      });
+
       const { ocr } = await import('https://cdn.jsdelivr.net/npm/@paddlejs-models/ocr@1.2.4/lib/index.js');
       await ocr.init();
       paddleOCR = ocr;
