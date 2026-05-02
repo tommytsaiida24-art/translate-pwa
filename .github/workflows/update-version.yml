@@ -1,0 +1,33 @@
+name: Update Version
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          git fetch --tags
+          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
+          echo "TAG=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Update version in index.html
+        run: |
+          sed -i 's/<div class="powered">由 MyMemory 提供翻譯引擎 · v.*/<div class="powered">由 MyMemory 提供翻譯引擎 · ${{ steps.get_tag.outputs.TAG }}<\/div>/' index.html
+
+      - name: Commit and push
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add index.html
+          git diff --staged --quiet || git commit -m "chore: bump version to ${{ steps.get_tag.outputs.TAG }}"
+          git push
