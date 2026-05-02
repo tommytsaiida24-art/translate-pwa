@@ -27,8 +27,6 @@
       --success: #10B981;
       --success-bg: #f0fdf4;
       --error: #EF4444;
-      --warning: #F59E0B;
-      --warning-bg: #fffbeb;
       --radius: 16px;
       --shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
       --shadow-hover: 0 8px 32px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06);
@@ -86,234 +84,6 @@
       border-radius: 2px;
       background: linear-gradient(90deg, var(--primary), var(--secondary), #F59E0B);
       opacity: 0.7;
-    }
-
-    /* ── Image Upload Area ── */
-    .image-section {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      border-top: 3px solid var(--secondary);
-      transition: box-shadow 0.2s;
-    }
-
-    .image-section:hover {
-      box-shadow: var(--shadow-hover);
-    }
-
-    .image-section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-
-    .image-section-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .image-section-title .emoji {
-      font-size: 1.1rem;
-    }
-
-    .ocr-status {
-      font-size: 0.78rem;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .ocr-status .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #d1d5db;
-      transition: background 0.3s;
-    }
-
-    .ocr-status .dot.ready { background: var(--success); }
-    .ocr-status .dot.loading { background: var(--warning); animation: pulse 1s infinite; }
-    .ocr-status .dot.error { background: var(--error); }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    .drop-zone {
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      padding: 32px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .drop-zone:hover,
-    .drop-zone.dragover {
-      border-color: var(--primary);
-      background: rgba(79, 70, 229, 0.04);
-    }
-
-    .drop-zone-text {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    .drop-zone-text strong {
-      color: var(--primary);
-      font-weight: 600;
-    }
-
-    .drop-zone .browse-link {
-      color: var(--primary);
-      font-weight: 600;
-      text-decoration: underline;
-      cursor: pointer;
-    }
-
-    .drop-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Image Preview */
-    .image-preview-wrap {
-      display: none;
-      position: relative;
-      margin-top: 12px;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    .image-preview-wrap.show {
-      display: block;
-    }
-
-    .image-preview-wrap img {
-      width: 100%;
-      max-height: 280px;
-      object-fit: contain;
-      display: block;
-      background: #f8fafc;
-    }
-
-    .image-remove-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: none;
-      background: rgba(0,0,0,0.6);
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.15s;
-    }
-
-    .image-remove-btn:hover {
-      background: rgba(0,0,0,0.8);
-    }
-
-    /* OCR Progress Bar */
-    .ocr-progress {
-      display: none;
-      margin-top: 12px;
-      background: var(--bg);
-      border-radius: 8px;
-      padding: 12px 16px;
-    }
-
-    .ocr-progress.show {
-      display: block;
-    }
-
-    .ocr-progress-label {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .ocr-progress-bar {
-      height: 6px;
-      background: var(--border);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    .ocr-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      border-radius: 3px;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    .ocr-result-text {
-      margin-top: 10px;
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-    }
-
-    .ocr-result-text strong {
-      color: var(--text);
-    }
-
-    /* Mode Tabs */
-    .mode-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 0;
-    }
-
-    .mode-tab {
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.15s;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .mode-tab:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .mode-tab.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: white;
     }
 
     /* ── Language Selector Row ── */
@@ -549,11 +319,6 @@
       animation: spin 0.7s linear infinite;
     }
 
-    .spinner.dark {
-      border-color: rgba(79,70,229,0.3);
-      border-top-color: var(--primary);
-    }
-
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
@@ -621,78 +386,31 @@
     <div class="divider"></div>
   </header>
 
-  <!-- Image Upload Section -->
-  <div class="image-section">
-    <div class="image-section-header">
-      <div class="image-section-title">
-        <span class="emoji">🖼️</span>
-        圖片翻譯（OCR）
-      </div>
-      <div class="ocr-status">
-        <span class="dot" id="ocrDot"></span>
-        <span id="ocrStatusText">OCR 未載入</span>
-      </div>
-    </div>
-
-    <div class="drop-zone" id="dropZone">
-      <div class="drop-zone-text">
-        拖曳圖片到這裡，或
-        <span class="browse-link">點擊選擇檔案</span>
-        <br>
-        <small>支援 PNG、JPG、GIF、WebP（最大 10MB）</small>
-      </div>
-      <input
-        type="file"
-        id="imageInput"
-        accept="image/png,image/jpeg,image/gif,image/webp"
-        aria-label="選擇圖片"
-      >
-    </div>
-
-    <!-- Image Preview -->
-    <div class="image-preview-wrap" id="imagePreviewWrap">
-      <img id="imagePreview" src="" alt="圖片預覽">
-      <button class="image-remove-btn" id="imageRemoveBtn" title="移除圖片">✕</button>
-    </div>
-
-    <!-- OCR Progress -->
-    <div class="ocr-progress" id="ocrProgress">
-      <div class="ocr-progress-label">
-        <span class="spinner dark" style="width:12px;height:12px;"></span>
-        <span id="ocrProgressText">正在初始化 OCR...</span>
-      </div>
-      <div class="ocr-progress-bar">
-        <div class="ocr-progress-fill" id="ocrProgressFill"></div>
-      </div>
-      <div class="ocr-result-text" id="ocrResultText"></div>
-    </div>
-  </div>
-
   <!-- Language Selector Row -->
   <div class="lang-row">
     <div class="lang-selector">
       <label>原始語言</label>
       <select id="sourceLang" class="lang-select">
-        <option value="zh-TW">🇹🇼 繁體中文 (繁體中文)</option>
-        <option value="zh-CN">🇨🇳 简体中文 (簡體中文)</option>
-        <option value="ja">🇯🇵 日本語 (日語)</option>
-        <option value="ko">🇰🇷 한국어 (韓語)</option>
-        <option value="en" selected>🇺🇸 English (英語)</option>
-        <option value="es">🇪🇸 Español (西班牙語)</option>
-        <option value="fr">🇫🇷 Français (法語)</option>
-        <option value="de">🇩🇪 Deutsch (德語)</option>
-        <option value="it">🇮🇹 Italiano (義大利語)</option>
-        <option value="pt">🇵🇹 Português (葡萄牙語)</option>
-        <option value="th">🇹🇭 ภาษาไทย (泰語)</option>
-        <option value="vi">🇻🇳 Tiếng Việt (越南語)</option>
-        <option value="ru">🇷🇺 Русский (俄語)</option>
-        <option value="ar">🇸🇦 العربية (阿拉伯語)</option>
-        <option value="hi">🇮🇳 हिन्दी (印地語)</option>
-        <option value="id">🇮🇩 Bahasa Indonesia (印尼語)</option>
-        <option value="ms">🇲🇾 Melayu (馬來語)</option>
-        <option value="tr">🇹🇷 Türkçe (土耳其語)</option>
-        <option value="pl">🇵🇱 Polski (波蘭語)</option>
-        <option value="nl">🇳🇱 Nederlands (荷蘭語)</option>
+        <option value="zh-TW">🇹🇼 繁體中文</option>
+        <option value="zh-CN">🇨🇳 简体中文</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="en" selected>🇺🇸 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="th">🇹🇭 ภาษาไทย</option>
+        <option value="vi">🇻🇳 Tiếng Việt</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="ar">🇸🇦 العربية</option>
+        <option value="hi">🇮🇳 हिन्दी</option>
+        <option value="id">🇮🇩 Bahasa</option>
+        <option value="ms">🇲🇾 Melayu</option>
+        <option value="tr">🇹🇷 Türkçe</option>
+        <option value="pl">🇵🇱 Polski</option>
+        <option value="nl">🇳🇱 Nederlands</option>
       </select>
     </div>
 
@@ -701,26 +419,26 @@
     <div class="lang-selector">
       <label>目標語言</label>
       <select id="targetLang" class="lang-select">
-        <option value="zh-TW" selected>🇹🇼 繁體中文 (繁體中文)</option>
-        <option value="zh-CN">🇨🇳 简体中文 (簡體中文)</option>
-        <option value="ja">🇯🇵 日本語 (日語)</option>
-        <option value="ko">🇰🇷 한국어 (韓語)</option>
-        <option value="en">🇺🇸 English (英語)</option>
-        <option value="es">🇪🇸 Español (西班牙語)</option>
-        <option value="fr">🇫🇷 Français (法語)</option>
-        <option value="de">🇩🇪 Deutsch (德語)</option>
-        <option value="it">🇮🇹 Italiano (義大利語)</option>
-        <option value="pt">🇵🇹 Português (葡萄牙語)</option>
-        <option value="th">🇹🇭 ภาษาไทย (泰語)</option>
-        <option value="vi">🇻🇳 Tiếng Việt (越南語)</option>
-        <option value="ru">🇷🇺 Русский (俄語)</option>
-        <option value="ar">🇸🇦 العربية (阿拉伯語)</option>
-        <option value="hi">🇮🇳 हिन्दी (印地語)</option>
-        <option value="id">🇮🇩 Bahasa Indonesia (印尼語)</option>
-        <option value="ms">🇲🇾 Melayu (馬來語)</option>
-        <option value="tr">🇹🇷 Türkçe (土耳其語)</option>
-        <option value="pl">🇵🇱 Polski (波蘭語)</option>
-        <option value="nl">🇳🇱 Nederlands (荷蘭語)</option>
+        <option value="zh-TW" selected>🇹🇼 繁體中文</option>
+        <option value="zh-CN">🇨🇳 简体中文</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="th">🇹🇭 ภาษาไทย</option>
+        <option value="vi">🇻🇳 Tiếng Việt</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="ar">🇸🇦 العربية</option>
+        <option value="hi">🇮🇳 हिन्दी</option>
+        <option value="id">🇮🇩 Bahasa</option>
+        <option value="ms">🇲🇾 Melayu</option>
+        <option value="tr">🇹🇷 Türkçe</option>
+        <option value="pl">🇵🇱 Polski</option>
+        <option value="nl">🇳🇱 Nederlands</option>
       </select>
     </div>
   </div>
@@ -763,62 +481,11 @@
     </div>
   </div>
 
-  <div class="powered">由 MyMemory 提供翻譯引擎 · v1.5</div>
+  <div class="powered">由 MyMemory 提供翻譯引擎</div>
 
 </div>
 
 <script>
-  // ── Paddle.js OCR Setup ──────────────────────────────────────────
-  let paddleOCR = null;
-  let ocrReady = false;
-
-  async function initOCR() {
-    const dot = document.getElementById('ocrDot');
-    const statusText = document.getElementById('ocrStatusText');
-    dot.className = 'dot loading';
-    statusText.textContent = 'OCR 載入中...';
-
-    try {
-      // Load all Paddle.js deps via script tags (global this pattern, not ES module)
-      await new Promise((resolve, reject) => {
-        const s1 = document.createElement('script');
-        s1.src = 'https://cdn.jsdelivr.net/npm/@paddlejs/paddlejs-core@2.1.17/lib/index.js';
-        s1.onload = () => {
-          const s2 = document.createElement('script');
-          s2.src = 'https://cdn.jsdelivr.net/npm/@paddlejs/paddlejs-backend-webgl@1.1.19/lib/index.js';
-          s2.onload = () => {
-            const s3 = document.createElement('script');
-            s3.src = 'https://cdn.jsdelivr.net/npm/@paddlejs-models/ocr@1.2.4/lib/index.js';
-            s3.onload = resolve;
-            s3.onerror = reject;
-            document.head.appendChild(s3);
-          };
-          s2.onerror = reject;
-          document.head.appendChild(s2);
-        };
-        s1.onerror = reject;
-        document.head.appendChild(s1);
-      });
-
-      paddleOCR = window.paddlejs.ocr;
-      await paddleOCR.init();
-      ocrReady = true;
-      dot.className = 'dot ready';
-      statusText.textContent = 'OCR 就緒';
-    } catch (err) {
-      console.error('OCR init error:', err);
-      dot.className = 'dot error';
-      statusText.textContent = 'OCR 載入失敗';
-    }
-  }
-
-  function setOCRProgress(pct, label) {
-    const fill = document.getElementById('ocrProgressFill');
-    const text = document.getElementById('ocrProgressText');
-    if (fill) fill.style.width = pct + '%';
-    if (text) text.textContent = label;
-  }
-
   // ── DOM Elements ──────────────────────────────────────────────
   const sourceSelect  = document.getElementById('sourceLang');
   const targetSelect  = document.getElementById('targetLang');
@@ -834,37 +501,28 @@
   const charCount     = document.getElementById('charCount');
   const errorMsg      = document.getElementById('errorMsg');
 
-  // Image / OCR elements
-  const dropZone      = document.getElementById('dropZone');
-  const imageInput    = document.getElementById('imageInput');
-  const imagePreviewWrap = document.getElementById('imagePreviewWrap');
-  const imagePreview = document.getElementById('imagePreview');
-  const imageRemoveBtn = document.getElementById('imageRemoveBtn');
-  const ocrProgress   = document.getElementById('ocrProgress');
-  const ocrResultText = document.getElementById('ocrResultText');
-
-  // ── Language labels (native + 繁體中文) ─────────────────────────
+  // ── Language labels (native) ──────────────────────────────────
   const langLabels = {
-    'zh-TW': '🇹🇼 繁體中文 (繁體中文)',
-    'zh-CN': '🇨🇳 简体中文 (簡體中文)',
-    'ja':    '🇯🇵 日本語 (日語)',
-    'ko':    '🇰🇷 한국어 (韓語)',
-    'en':    '🇺🇸 English (英語)',
-    'es':    '🇪🇸 Español (西班牙語)',
-    'fr':    '🇫🇷 Français (法語)',
-    'de':    '🇩🇪 Deutsch (德語)',
-    'it':    '🇮🇹 Italiano (義大利語)',
-    'pt':    '🇵🇹 Português (葡萄牙語)',
-    'th':    '🇹🇭 ภาษาไทย (泰語)',
-    'vi':    '🇻🇳 Tiếng Việt (越南語)',
-    'ru':    '🇷🇺 Русский (俄語)',
-    'ar':    '🇸🇦 العربية (阿拉伯語)',
-    'hi':    '🇮🇳 हिन्दी (印地語)',
-    'id':    '🇮🇩 Bahasa Indonesia (印尼語)',
-    'ms':    '🇲🇾 Melayu (馬來語)',
-    'tr':    '🇹🇷 Türkçe (土耳其語)',
-    'pl':    '🇵🇱 Polski (波蘭語)',
-    'nl':    '🇳🇱 Nederlands (荷蘭語)',
+    'zh-TW': '🇹🇼 繁體中文',
+    'zh-CN': '🇨🇳 简体中文',
+    'ja':    '🇯🇵 日本語',
+    'ko':    '🇰🇷 한국어',
+    'en':    '🇺🇸 English',
+    'es':    '🇪🇸 Español',
+    'fr':    '🇫🇷 Français',
+    'de':    '🇩🇪 Deutsch',
+    'it':    '🇮🇹 Italiano',
+    'pt':    '🇵🇹 Português',
+    'th':    '🇹🇭 ภาษาไทย',
+    'vi':    '🇻🇳 Tiếng Việt',
+    'ru':    '🇷🇺 Русский',
+    'ar':    '🇸🇦 العربية',
+    'hi':    '🇮🇳 हिन्दी',
+    'id':    '🇮🇩 Bahasa',
+    'ms':    '🇲🇾 Melayu',
+    'tr':    '🇹🇷 Türkçe',
+    'pl':    '🇵🇱 Polski',
+    'nl':    '🇳🇱 Nederlands',
   };
 
   // ── Language codes for MyMemory / Web Speech API ───────────────
@@ -890,7 +548,8 @@
   // ── Char count ─────────────────────────────────────────────────
   inputText.addEventListener('input', () => {
     const len = inputText.value.length;
-    charCount.textContent = `${len} 字`;
+    charCount.textContent = `${len} ${len === 1 ? '字' : '字'}`;
+    // Auto-translate on typing (debounced)
     clearTimeout(window._debounce);
     if (inputText.value.trim()) {
       window._debounce = setTimeout(() => translate(), 1200);
@@ -922,7 +581,7 @@
       const translated = data.responseData.translatedText;
       outputText.value = translated;
       outputText.classList.remove('fade-in');
-      void outputText.offsetWidth;
+      void outputText.offsetWidth; // reflow
       outputText.classList.add('fade-in');
 
     } catch (err) {
@@ -958,24 +617,32 @@
   swapBtn.addEventListener('click', () => {
     const srcVal = sourceSelect.value;
     const tgtVal = targetSelect.value;
+
+    // Swap selects
     sourceSelect.value = tgtVal;
     targetSelect.value = srcVal;
     updateTags();
 
+    // Swap content
     const tmp = inputText.value;
     inputText.value = outputText.value;
     outputText.value = tmp;
 
+    // Re-count
     const len = inputText.value.length;
     charCount.textContent = `${len} 字`;
 
-    if (inputText.value.trim()) translate();
+    // Re-translate if there's content
+    if (inputText.value.trim()) {
+      translate();
+    }
   });
 
   // ── Copy ───────────────────────────────────────────────────────
   copyBtn.addEventListener('click', async () => {
     const text = outputText.value;
     if (!text) return;
+
     try {
       await navigator.clipboard.writeText(text);
       const btnText = copyBtn.querySelector('.btn-text');
@@ -986,6 +653,7 @@
         copyBtn.classList.remove('copied');
       }, 2000);
     } catch {
+      // fallback
       const ta = document.createElement('textarea');
       ta.value = text;
       document.body.appendChild(ta);
@@ -999,7 +667,10 @@
   speakBtn.addEventListener('click', () => {
     const text = outputText.value;
     if (!text) return;
+
+    // Cancel any ongoing speech
     speechSynthesis.cancel();
+
     const utt = new SpeechSynthesisUtterance(text);
     utt.lang = speechLangs[targetSelect.value] || 'zh-TW';
     utt.rate = 0.95;
@@ -1016,108 +687,8 @@
     inputText.focus();
   });
 
-  // ── Image Handling ─────────────────────────────────────────────
-  imageInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) handleImageFile(file);
-  });
-
-  // Drag and drop
-  dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('dragover');
-  });
-
-  dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('dragover');
-  });
-
-  dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      handleImageFile(file);
-    }
-  });
-
-  imageRemoveBtn.addEventListener('click', () => {
-    clearImage();
-  });
-
-  function clearImage() {
-    imageInput.value = '';
-    imagePreviewWrap.classList.remove('show');
-    imagePreview.src = '';
-    ocrProgress.classList.remove('show');
-    ocrResultText.textContent = '';
-    setOCRProgress(0, '');
-  }
-
-  function handleImageFile(file) {
-    if (file.size > 10 * 1024 * 1024) {
-      showError('圖片太大，請選擇 10MB 以下的檔案');
-      return;
-    }
-
-    // Show preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.src = e.target.result;
-      imagePreviewWrap.classList.add('show');
-    };
-    reader.readAsDataURL(file);
-
-    // Run OCR
-    runOCR(file);
-  }
-
-  async function runOCR(file) {
-    if (!ocrReady || !paddleOCR) {
-      showError('OCR 尚未準備完成，請稍候...');
-      return;
-    }
-
-    ocrProgress.classList.add('show');
-    ocrResultText.textContent = '';
-    setOCRProgress(0, '開始辨識...');
-    inputText.value = '';
-    outputText.value = '';
-
-    try {
-      setOCRProgress(30, '偵測文字區域...');
-      const result = await paddleOCR.recognize(file);
-      const texts = result.data.filter(r => r.text).map(r => r.text.trim());
-      const text = texts.join(' ').trim();
-
-      if (!text) {
-        ocrResultText.innerHTML = '<strong>找不到文字</strong>，請嘗試其他圖片';
-        return;
-      }
-
-      ocrResultText.innerHTML = `已辨識出 <strong>${text.length} 個字元</strong>`;
-      inputText.value = text;
-      charCount.textContent = `${text.length} 字`;
-
-      // Auto-translate
-      await translate();
-
-    } catch (err) {
-      console.error('OCR error:', err);
-      ocrResultText.textContent = '';
-      showError(`OCR 失敗：${err.message}`);
-    }
-  }
-
-  function showError(msg) {
-    errorMsg.textContent = msg;
-    errorMsg.classList.add('show');
-    setTimeout(() => errorMsg.classList.remove('show'), 4000);
-  }
-
   // ── Init ──────────────────────────────────────────────────────
   updateTags();
-  initOCR();
 </script>
 
 </body>
