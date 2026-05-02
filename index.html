@@ -779,14 +779,20 @@
     statusText.textContent = 'OCR 載入中...';
 
     try {
-      // Load Paddle.js dependencies via <script> tags (import() loses `this` context in module scope)
+      // Load all Paddle.js deps via script tags (global this pattern, not ES module)
       await new Promise((resolve, reject) => {
         const s1 = document.createElement('script');
         s1.src = 'https://cdn.jsdelivr.net/npm/@paddlejs/paddlejs-core@2.1.17/lib/index.js';
         s1.onload = () => {
           const s2 = document.createElement('script');
           s2.src = 'https://cdn.jsdelivr.net/npm/@paddlejs/paddlejs-backend-webgl@1.1.19/lib/index.js';
-          s2.onload = resolve;
+          s2.onload = () => {
+            const s3 = document.createElement('script');
+            s3.src = 'https://cdn.jsdelivr.net/npm/@paddlejs-models/ocr@1.2.4/lib/index.js';
+            s3.onload = resolve;
+            s3.onerror = reject;
+            document.head.appendChild(s3);
+          };
           s2.onerror = reject;
           document.head.appendChild(s2);
         };
@@ -794,9 +800,8 @@
         document.head.appendChild(s1);
       });
 
-      const { ocr } = await import('https://cdn.jsdelivr.net/npm/@paddlejs-models/ocr@1.2.4/lib/index.js');
-      await ocr.init();
-      paddleOCR = ocr;
+      paddleOCR = window.paddlejs.ocr;
+      await paddleOCR.init();
       ocrReady = true;
       dot.className = 'dot ready';
       statusText.textContent = 'OCR 就緒';
